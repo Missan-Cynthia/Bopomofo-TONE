@@ -1,0 +1,12 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /bopomofo-tone/{uid}/audio/{key} {
+      function owner() { return request.auth != null && request.auth.uid == uid; }
+      allow read, delete: if owner();
+      allow create: if owner() && key.matches('[a-z0-9-]+[.]wav')
+        && request.resource.contentType == 'audio/wav'
+        && request.resource.size > 44 && request.resource.size <= 400000;
+    }
+  }
+}

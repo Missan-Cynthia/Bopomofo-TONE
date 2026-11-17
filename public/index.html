@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff7e9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="description" content="聽注音、找聲調，開消防車出動救援。">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+<link rel="icon" href="./assets/icon-192.png">
+<link rel="stylesheet" href="./style.css">
+<title>消防車注音救援</title>
+</head>
+<body>
+<header class="top">
+  <button id="brand" class="brand" aria-label="返回首頁"><img src="./assets/icon-192.png" alt=""><span>消防車注音救援</span></button>
+  <div class="top-actions"><button id="install" hidden>安裝遊戲</button><button id="sound" aria-pressed="true">♫ 音效開啟</button><button id="signout" hidden>登出</button></div>
+</header>
+<main>
+<p id="system-status" role="status" hidden></p>
+<section id="login" hidden class="panel login">
+  <h1>登入家庭帳號</h1>
+  <form id="login-form"><label>電子郵件<input name="email" type="email" autocomplete="username" required></label><label>密碼<input name="password" type="password" autocomplete="current-password" required></label><button class="primary">登入</button></form>
+</section>
+<section id="home" hidden>
+  <div class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">注音聲調練習</p>
+      <h1>消防車<br><em>出動救援！</em></h1>
+      <p>聽一聽，找出正確的聲調。<br>每答對一題，就能撲滅一處火焰。</p>
+      <button id="start" class="primary">開始救援 <span aria-hidden="true">→</span></button>
+    </div>
+    <div id="home-scene" class="home-scene" aria-hidden="true"></div>
+  </div>
+  <div class="home-links">
+    <button id="open-material"><span class="tile-icon peach">●</span><span><strong>教材錄音</strong><small>匯入注音、錄音與驗收</small></span><b>→</b></button>
+    <button id="open-history"><span class="tile-icon mint">▤</span><span><strong>學習紀錄</strong><small>查看每次救援的作答</small></span><b>→</b></button>
+  </div>
+  <p id="preview-mode" hidden>手機測試版的錄音與作答保存在這台裝置。</p>
+</section>
+<section id="material" hidden>
+  <button class="back" data-home>← 返回首頁</button>
+  <h1>教材錄音</h1>
+  <div id="stats" class="stats"></div>
+  <details class="panel" id="import-panel"><summary>匯入注音清單</summary>
+    <p>以換行、空格或逗號分隔。新清單會更新教材順序，已儲存的錄音會依注音保留。</p>
+    <label for="list">注音文字清單</label>
+    <textarea id="list" rows="4" placeholder="ㄅㄚ　ㄅㄚˊ　ㄅㄚˇ　ㄅㄚˋ"></textarea>
+    <div class="actions"><button id="import" class="primary">確認匯入</button><label class="buttonish">選擇 UTF-8 文字檔<input id="list-file" type="file" accept=".txt,.csv,text/plain,text/csv" hidden></label><button id="reference">帶入注音符號一覽表</button></div>
+  </details>
+  <div id="lesson" class="panel" hidden>
+    <div class="lesson-head"><div class="segmented"><button id="mother" aria-pressed="true">媽媽錄音</button><button id="brother" aria-pressed="false">哥哥錄音</button></div>
+    <div class="actions"><button id="previous" aria-label="上一組">←</button><label><span class="sr-only">選擇拼音</span><select id="group"></select></label><button id="next" aria-label="下一組">→</button></div></div>
+    <div id="lesson-cards" class="lesson-cards"></div>
+    <p id="material-status" role="status"></p>
+    <button id="material-play-retry" hidden>▶ 播放已載入的錄音</button>
+  </div>
+</section>
+<section id="game" hidden>
+  <div class="game-head"><button class="back" data-home>← 返回首頁</button><strong id="progress"></strong><button id="skip">跳過開場</button></div>
+  <div id="scene" class="mission-scene" aria-hidden="true"></div>
+  <div class="controls">
+    <button id="listen" class="primary">▶ 聽題目</button>
+    <p id="game-status" role="status"></p>
+    <div id="choices" class="choices"></div>
+  </div>
+</section>
+<section id="done" hidden class="panel result">
+  <div class="success-art" aria-hidden="true">✦　🚒　✦</div><h1>救援完成！</h1>
+  <p id="summary"></p><div id="results"></div>
+  <div class="actions"><button id="again" class="primary">再救援一次</button><button data-home>返回首頁</button></div>
+</section>
+<section id="history" hidden><button class="back" data-home>← 返回首頁</button><h1>學習紀錄</h1><div id="history-list"></div></section>
+</main>
+<audio id="player" playsinline preload="auto"></audio>
+<script type="module" src="./app.js"></script>
+</body>
+</html>

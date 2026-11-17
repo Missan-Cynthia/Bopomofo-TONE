@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "default": "enlightenment-2"
+  },
+  "targets": {
+    "enlightenment-2": {
+      "hosting": {
+        "bopomofo-tone": ["bopomofotone"]
+      }
+    }
+  }
+}

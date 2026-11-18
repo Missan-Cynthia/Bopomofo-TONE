@@ -1,5 +1,5 @@
-const cacheName = 'zhuyin-rescue-v3';
-const shell = ['./', './index.html', './style.css', './app.js', './core.js', './local.js', './audio.js', './scene.js',
+const cacheName = 'zhuyin-rescue-v4';
+const shell = ['./', './index.html', './style.css', './app.js', './core.js', './local.js', './audio.js', './scene.js', './modes.js',
   './cloud.js', './cloud-config.js', './manifest.webmanifest', './assets/icon-192.png', './assets/icon-512.png',
   './assets/icon-512-maskable.png', './assets/apple-touch-icon.png', './assets/reference.txt'];
 self.addEventListener('install', event => {

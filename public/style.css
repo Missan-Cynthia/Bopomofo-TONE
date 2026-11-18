@@ -136,3 +136,59 @@ textarea{display:block;width:100%;margin:5px 0 12px;resize:vertical}
 @media(max-width:680px){.hero{grid-template-columns:1fr;min-height:0}.hero-copy{padding:25px}.home-scene{height:265px;border-left:0;border-top:1px solid #ebc78d}.lesson-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.home-links{gap:9px}.home-links button{gap:8px;padding:10px}.tile-icon{width:32px;height:38px}.top-actions button{font-size:.78rem;padding:7px}.brand img{width:32px;height:32px}.choices{gap:6px}.choices button{min-height:60px}}
 @media(orientation:landscape) and (max-height:580px){.top{padding-block:7px}.top img{width:30px;height:30px}main{padding-top:0}body:has(#game:not([hidden])) .mission-scene{height:44vh;min-height:135px}.game-head{margin-bottom:5px}.controls{margin-top:6px}.controls .primary{min-height:40px}.choices button{min-height:45px;font-size:1.65rem}.controls p{margin:3px 0}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0ms!important}}
+.mission-map{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:20px 0}
+.mission-map button{text-align:left;display:grid;gap:9px;padding:20px;background:#fffdf5}
+.mission-map button>span{font-size:3rem}
+.mission-map strong{font-size:1.25rem}
+.mission-map small{font-weight:500;line-height:1.6}
+.mission-map [aria-pressed=true],.characters [aria-pressed=true]{border:3px solid #267782;background:#e5f4eb}
+.characters{display:flex;gap:12px;flex-wrap:wrap}
+.characters button{border-color:var(--rival-color)}
+.characters span{display:block;font-size:2rem}
+.versus{text-align:center;margin:0 0 10px;font-weight:750;color:#306370}
+.rival{left:65%;width:26%;bottom:10%;transform:scaleX(-1)}
+.rival .truck-body,.rival .cab{background:var(--rival-color);box-shadow:inset 0 -8px #0002}
+.intro .rival{animation:none}
+.mode-objects{position:absolute;inset:0;pointer-events:none;z-index:3}
+.float-ball,.finish-line,.mud-monster,.animals,.rescue-ladder,.obstacle,.splash{display:none}
+[data-mode=water] .building,[data-mode=tug] .building,[data-mode=chase] .building,[data-mode=mud] .building{opacity:0}
+[data-mode=water] .station,[data-mode=tug] .station,[data-mode=chase] .station,[data-mode=mud] .station{opacity:.3}
+[data-mode=water]>.truck:not(.rival),[data-mode=tug]>.truck:not(.rival){left:6%}
+[data-mode=water] .splash{display:block;position:absolute;left:73%;top:44%;font-size:4rem;opacity:0}
+[data-mode=water].player-action .splash{animation:splosh .7s both}
+[data-mode=water].player-action .rival{animation:hit .8s both}
+[data-mode=water].computer-action .splash{left:13%;animation:splosh .6s both}
+[data-mode=water].computer-action>.truck:not(.rival){animation:shake .5s}
+[data-mode=tug] .float-ball{display:block;position:absolute;left:calc(42% + var(--fraction,0)*38%);top:60%;width:7%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 30% 25%,#b0ecff,#2872b8);border:3px solid white;transition:left .5s}
+[data-mode=tug].computer-action .float-ball{transform:translateX(-12px)}
+[data-mode=tug] .finish-line{display:block;position:absolute;left:87%;bottom:20%;height:35%;width:6px;background:repeating-linear-gradient(#fff 0 8px,#263f47 8px 16px)}
+[data-mode=chase]>.truck:not(.rival){left:calc(6% + var(--fraction,0)*39%);transition:left .65s}
+[data-mode=chase] .rival{transform:none;left:72%;bottom:35%;width:22%}
+[data-mode=chase] .obstacle{display:block;position:absolute;bottom:25%;left:52%;font-size:3rem;color:#e69b32}
+[data-mode=chase].player-action>.truck:not(.rival){animation:jump .85s}
+[data-mode=chase].computer-action .rival{animation:shake .5s}
+[data-mode=mud] .rival,[data-mode=ladder] .rival{left:7%;width:24%;bottom:9%;transform:none}
+[data-mode=mud]>.truck:not(.rival){left:31%;width:28%}
+[data-mode=mud] .mud-monster{display:grid;place-content:center;position:absolute;left:64%;top:26%;width:25%;height:48%;border-radius:42% 46% 32% 35%;background:#a8c878;border:4px solid #52794c;color:#244c40;font-size:clamp(15px,4vw,40px)}
+.mud-monster b{text-align:center}
+.mud-patch{position:absolute;width:37%;height:28%;border-radius:45%;background:#92704c;left:calc(8% + mod(var(--patch),2)*45%);top:calc(4% + var(--patch)*13%);transition:opacity .5s,scale .5s}
+.mud-patch.clean{opacity:0;scale:.1}
+[data-mode=mud].computer-action .mud-monster{animation:shake .5s}
+[data-mode=ladder] .fires{display:none}
+[data-mode=ladder] .animals{display:flex;position:absolute;left:60%;width:29%;height:45%;top:25%;align-items:center;flex-wrap:wrap;justify-content:center;gap:5px}
+.animals span{font-size:clamp(20px,4vw,38px);transition:transform .7s,opacity .7s}
+.animals .rescued{transform:translateY(90px);opacity:0}
+[data-mode=ladder] .rescue-ladder{display:block;position:absolute;left:43%;bottom:28%;width:32%;height:15px;border:3px solid #456777;background:repeating-linear-gradient(90deg,#ffe6aa 0 10px,#456777 10px 14px);transform-origin:left center;transform:rotate(calc(-15deg - var(--fraction,0)*28deg));transition:transform .65s}
+[data-mode=ladder].computer-action .rival{animation:shake .5s}
+[data-mode=race] .rival{left:5%;width:23%;bottom:37%;transform:none}
+[data-mode=race].computer-action .rival{animation:shake .5s}
+[data-mode=race] .building:after{content:"電腦隊正在救援";position:absolute;bottom:100%;width:100%;text-align:center;font-size:12px;background:#fff6da;border-radius:10px;padding:4px}
+[data-mode=water].spraying .water,[data-mode=tug].spraying .water,[data-mode=mud].spraying .water{width:40%;left:28%;top:60%;transform:rotate(-8deg)}
+@keyframes splosh{0%{opacity:0;scale:.4}40%{opacity:1;scale:1.3}100%{opacity:0;scale:1.7}}
+@keyframes hit{30%{transform:scaleX(-1) translateX(-20px) rotate(-12deg)}100%{transform:scaleX(-1)}}
+@keyframes jump{40%{translate:0 -35px;rotate:-8deg}100%{translate:0 0;rotate:0deg}}
+@media(max-width:700px){.mission-map{grid-template-columns:repeat(2,1fr);gap:10px}.mission-map button{padding:13px}.mission-map strong{font-size:1rem}.mission-map button>span{font-size:2rem}.characters{gap:7px}.characters button{flex:1;padding:8px}.versus{font-size:.85rem}}
+[data-mode=race] .building:not(.computer-building){left:64%;width:27%;height:49%}
+[data-mode=race] .computer-building{left:7%;width:24%;height:40%;background:#8db5bc}
+[data-mode=race] .building:not(.computer-building):after{content:"我的救援區"}
+[data-mode=race] .computer-building:after{content:"電腦救援區"}

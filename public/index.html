@@ -29,7 +29,7 @@
     <div class="hero-copy">
       <p class="eyebrow">注音聲調練習</p>
       <h1>消防車<br><em>出動救援！</em></h1>
-      <p>聽一聽，找出正確的聲調。<br>每答對一題，就能撲滅一處火焰。</p>
+      <p>聽一聽，找出正確的聲調。<br>和電腦消防車一起對戰、追逐與救援！</p>
       <button id="start" class="primary">開始救援 <span aria-hidden="true">→</span></button>
     </div>
     <div id="home-scene" class="home-scene" aria-hidden="true"></div>
@@ -39,6 +39,13 @@
     <button id="open-history"><span class="tile-icon mint">▤</span><span><strong>學習紀錄</strong><small>查看每次救援的作答</small></span><b>→</b></button>
   </div>
   <p id="preview-mode" hidden>手機測試版的錄音與作答保存在這台裝置。</p>
+</section>
+<section id="missions" hidden>
+  <button class="back" data-home>← 返回首頁</button>
+  <h1>今天出什麼任務？</h1>
+  <div id="mission-map" class="mission-map"></div>
+  <div class="panel"><h2 id="character-title">選一台電腦消防車</h2><div id="characters" class="characters"></div></div>
+  <button id="launch" class="primary">出動！</button>
 </section>
 <section id="material" hidden>
   <button class="back" data-home>← 返回首頁</button>
@@ -59,7 +66,8 @@
   </div>
 </section>
 <section id="game" hidden>
-  <div class="game-head"><button class="back" data-home>← 返回首頁</button><strong id="progress"></strong><button id="skip">跳過開場</button></div>
+  <div class="game-head"><button class="back" data-home>← 返回首頁</button><strong id="mission-name"></strong><strong id="progress"></strong><button id="skip">跳過開場</button></div>
+  <div id="versus" class="versus" aria-live="polite"></div>
   <div id="scene" class="mission-scene" aria-hidden="true"></div>
   <div class="controls">
     <button id="listen" class="primary">▶ 聽題目</button>
@@ -68,9 +76,9 @@
   </div>
 </section>
 <section id="done" hidden class="panel result">
-  <div class="success-art" aria-hidden="true">✦　🚒　✦</div><h1>救援完成！</h1>
+  <div class="success-art" aria-hidden="true">✦　🚒　✦</div><h1 id="result-title">救援完成！</h1>
   <p id="summary"></p><div id="results"></div>
-  <div class="actions"><button id="again" class="primary">再救援一次</button><button data-home>返回首頁</button></div>
+  <div class="actions"><button id="again" class="primary">再玩一次</button><button id="change-mission">換任務</button><button data-home>返回首頁</button></div>
 </section>
 <section id="history" hidden><button class="back" data-home>← 返回首頁</button><h1>學習紀錄</h1><div id="history-list"></div></section>
 </main>

@@ -3,13 +3,15 @@ import { local } from './local.js';
 import { firebaseConfig } from './cloud-config.js';
 import { microphone, wav, playable, wakeAudio, chime } from './audio.js';
 import { renderScene, extinguish } from './scene.js';
+import { modes, characters, computerProgress, decorateScene, updateScene } from './modes.js';
 
 const pagesPreview = location.hostname === 'missan-cynthia.github.io';
 const cloudConfig = pagesPreview ? null : firebaseConfig;
 const $ = id => document.getElementById(id);
 const player = $('player');
 $('preview-mode').hidden = !pagesPreview;
-const screens = ['home','material','game','done','history','login'];
+const screens = ['home','missions','material','game','done','history','login'];
+let selectedMode = modes[0], selectedCharacter = characters[0];
 let screen, store, cloud, catalog = [], meta = {}, groups = new Map();
 let role = 'mother', group = 0, recording, draft, busy = false;
 let mission, run = 0, objectUrl, mediaVersion = 0, installPrompt;
@@ -241,13 +243,27 @@ event('import','click', async () => {
 const delay = ms => new Promise(resolve => setTimeout(resolve, matchMedia('(prefers-reduced-motion: reduce)').matches ? Math.min(ms,150) : ms));
 const gameStatus = message => { $('game-status').textContent = message; };
 function progress() {
-  $('progress').textContent = '已滅火 ' + mission.completed.length + ' / ' + settings.fires;
+  $('progress').textContent = mission.completed.length + ' / ' + settings.fires + ' ' + mission.mode.unit;
+  $('versus').textContent = (['mud','ladder'].includes(mission.mode.id) ? '電腦隊友　' : '電腦對手　') +
+    mission.character.name + (mission.mode.id === 'race' ? '　我方 ' + mission.completed.length + '：' + mission.computer + ' 電腦' : '　一起聽清楚再行動');
+}
+function chooseMission() {
+  run++;
+  mission = undefined;
+  pause();
+  notice();
+  $('mission-map').innerHTML = modes.map(mode => '<button data-mode="' + mode.id + '" aria-pressed="' +
+    (selectedMode.id === mode.id) + '"><span>' + mode.icon + '</span><strong>' + mode.name + '</strong><small>' + mode.description + '</small></button>').join('');
+  $('characters').innerHTML = characters.map(character => '<button data-character="' + character.id + '" aria-pressed="' +
+    (selectedCharacter.id === character.id) + '" style="--rival-color:' + character.color + '"><span>🚒</span>' + character.name + '</button>').join('');
+  $('character-title').textContent = ['mud','ladder'].includes(selectedMode.id) ? '選一位電腦隊友' : '選一位電腦對手';
+  show('missions');
 }
 function lockAnswers(locked) {
   for (const button of $('choices').children) button.disabled = locked;
 }
 async function startGame() {
-  if (busy || !store) return;
+  if (busy || !store || (screen === 'game' && mission)) return;
   wakeAudio();
   notice();
   const token = ++run;
@@ -259,12 +275,14 @@ async function startGame() {
     notice('題庫還沒有錄音。請先到「教材錄音」儲存媽媽的錄音，或驗收哥哥的錄音。');
     return;
   }
-  mission = { id: crypto.randomUUID(), data, pool, queue: [], cache: new Map(), bad: new Set(), completed: [], intro: true };
+  mission = { id: crypto.randomUUID(), mode:selectedMode, character:selectedCharacter, computer:0, data, pool, queue: [], cache: new Map(), bad: new Set(), completed: [], intro: true };
   $('choices').replaceChildren();
   $('listen').disabled = true;
   $('skip').hidden = false;
   renderScene($('scene'), settings.fires);
+  decorateScene($('scene'), selectedMode, selectedCharacter, settings.fires);
   $('scene').className = 'mission-scene intro';
+  $('mission-name').textContent = selectedMode.name;
   progress();
   gameStatus('消防局收到救援通報！');
   show('game');
@@ -311,7 +329,8 @@ async function nextQuestion() {
       if (token !== run) return;
       current.question = {
         id: crypto.randomUUID(), questionId: entry.id, base: entry.base, correctTone: entry.tone,
-        source, missionId: current.id, firstCorrect: null, wrongCount: 0, playCount: 0, attempts: []
+        source, missionId: current.id, mode:current.mode.id, character:current.character.id,
+        firstCorrect: null, wrongCount: 0, playCount: 0, attempts: []
       };
       for (const tone of shuffled(tones)) {
         const button = document.createElement('button');
@@ -392,19 +411,34 @@ event('choices','click', async event => {
     await listen();
     return;
   }
-  gameStatus('答對了！消防車正在噴水。');
+  gameStatus('答對了！' + current.mode.action);
   chime(true, sound);
-  const finish = extinguish($('scene'), current.completed.length);
+  const scene = $('scene');
+  scene.classList.add('player-action');
+  const finish = ['race','mud','water','tug'].includes(current.mode.id) ? extinguish(scene, current.completed.length) : () => {};
   await delay(settings.sprayMs);
   if (current !== mission) return;
   finish();
+  scene.classList.remove('player-action');
   current.completed.push(revised);
+  updateScene(scene, current.completed.length, settings.fires, current.computer);
+  gameStatus(current.character.name + (['mud','ladder'].includes(current.mode.id) ? '正在接應！' : '回合！'));
+  scene.classList.add('computer-action');
+  await delay(650);
+  if (current !== mission) return;
+  scene.classList.remove('computer-action');
+  current.computer = computerProgress(current.completed.length, revised.firstCorrect, current.computer, settings.fires);
+  updateScene(scene, current.completed.length, settings.fires, current.computer);
   progress();
   if (current.completed.length < settings.fires) await nextQuestion();
   else {
     pause();
     chime(false, sound);
-    $('summary').textContent = '撲滅 ' + current.completed.length + ' 處火焰，第一次答對 ' + current.completed.filter(row => row.firstCorrect).length + ' 題。';
+    $('result-title').textContent = current.mode.id === 'race' ?
+      (current.computer === settings.fires ? '兩隊一起完成！' : '滅火賽勝利！') : current.mode.ending;
+    $('summary').textContent = current.mode.name + '完成 ' + current.completed.length + ' 題，第一次答對 ' +
+      current.completed.filter(row => row.firstCorrect).length + ' 題。' +
+      (current.mode.id === 'race' ? ' 我方 ' + current.completed.length + '：' + current.computer + ' 電腦。' : '');
     showRecords($('results'), current.completed);
     show('done');
   }
@@ -443,7 +477,9 @@ event('open-history','click', async () => {
     const panel = document.createElement('article');
     panel.className = 'panel history-mission';
     const title = document.createElement('h2');
-    title.textContent = '救援紀錄　' + new Date(entries.at(-1).answeredAt).toLocaleString('zh-TW');
+    const first = entries.at(-1);
+    title.textContent = (modes.find(mode => mode.id === first.mode)?.name || '救援紀錄') + ' · ' +
+      (characters.find(character => character.id === first.character)?.name || '') + '　' + new Date(first.answeredAt).toLocaleString('zh-TW');
     const list = document.createElement('div');
     showRecords(list, entries.reverse(), true);
     panel.append(title,list);
@@ -452,7 +488,17 @@ event('open-history','click', async () => {
   if (!rows.length) $('history-list').textContent = '目前沒有作答紀錄。';
   show('history');
 });
-event('start','click',startGame);
+event('start','click',chooseMission);
+event('change-mission','click',chooseMission);
+event('launch','click',startGame);
+event('mission-map','click', e => {
+  const id = e.target.closest('[data-mode]')?.dataset.mode;
+  if (id) { selectedMode = modes.find(mode => mode.id === id); chooseMission(); }
+});
+event('characters','click', e => {
+  const id = e.target.closest('[data-character]')?.dataset.character;
+  if (id) { selectedCharacter = characters.find(character => character.id === id); chooseMission(); }
+});
 event('again','click',startGame);
 event('skip','click',leaveIntro);
 event('listen','click',listen);

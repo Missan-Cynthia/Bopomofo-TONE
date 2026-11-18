@@ -2,6 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { parseList, candidates, shuffled, recordAnswer } from './public/core.js';
+import { computerProgress, modes } from './public/modes.js';
+
+test('six missions and computer race progress support first answers and retries', () => {
+  assert.equal(new Set(modes.map(mode => mode.id)).size,6);
+  let computer = 0;
+  for (let round = 1; round <= 5; round++) computer = computerProgress(round,true,computer,5);
+  assert.equal(computer,2);
+  computer = 0;
+  for (let round = 1; round <= 5; round++) computer = computerProgress(round,false,computer,5);
+  assert.equal(computer,5);
+});
 
 test('imports exactly the supplied tones and retains source order and stable IDs', () => {
   const { entries, neutral } = parseList('ㄆㄚˋ，ㄅㄚˉ\nㄆㄚˊ ㄆㄚˋ ˙ㄇㄚ');

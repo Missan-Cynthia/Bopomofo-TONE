@@ -33,8 +33,39 @@ export function decorateScene(container, mode, character, total) {
     '<div class="mud-monster"><span>●　●</span><b>◡</b>' +
     Array.from({length:total}, (_, i) => '<i class="mud-patch" style="--patch:'+ i +'"></i>').join('') + '</div>' +
     '<div class="animals">' + Array.from({length:total},(_,i) => '<span style="--animal:'+ i +'">🐱</span>').join('') + '</div>' +
-    '<div class="rescue-ladder"></div><div class="obstacle">▰</div><div class="splash">💦</div>';
+    '<div class="rescue-ladder"></div><div class="obstacle">▰</div><div class="splash">💦</div>' +
+    '<div class="computer-water"><i></i><i></i><i></i></div><div class="landing-pad"></div><div class="carried-animal">🐱</div>';
   container.append(objects);
+}
+
+export const computerTurnMs = 1450;
+
+export function beginComputerTurn(container, mode, previous, next, round) {
+  const rival = container.querySelector('.rival');
+  let target;
+  if (mode === 'race') target = container.querySelectorAll('.computer-building .flame')[previous];
+  else if (mode === 'mud') target = container.querySelector('.mud-monster');
+  else if (mode === 'tug') target = container.querySelector('.float-ball');
+  else target = container.querySelector('.truck:not(.rival)');
+  if (target) {
+    const scene = container.getBoundingClientRect();
+    const origin = rival.querySelector('.beacons').getBoundingClientRect();
+    const destination = target.getBoundingClientRect();
+    const x = origin.left + origin.width / 2;
+    const y = origin.bottom;
+    const dx = destination.left + destination.width / 2 - x;
+    const dy = destination.top + destination.height / 2 - y;
+    container.style.setProperty('--computer-jet-x', x - scene.left + 'px');
+    container.style.setProperty('--computer-jet-y', y - scene.top + 'px');
+    container.style.setProperty('--computer-jet-width', Math.hypot(dx,dy) + 'px');
+    container.style.setProperty('--computer-jet-angle', Math.atan2(dy,dx) + 'rad');
+  }
+  container.classList.add('computer-action');
+  container.classList.toggle('computer-miss', mode === 'race' && next === previous);
+  container.style.setProperty('--rescue-number', round);
+  return () => {
+    container.classList.remove('computer-action','computer-miss');
+  };
 }
 
 export function updateScene(container, round, total, computer) {

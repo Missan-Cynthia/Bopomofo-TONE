@@ -3,7 +3,7 @@ import { local } from './local.js';
 import { firebaseConfig } from './cloud-config.js';
 import { microphone, wav, playable, wakeAudio, chime } from './audio.js';
 import { renderScene, extinguish, truck } from './scene.js';
-import { modes, characters, computerProgress, decorateScene, updateScene } from './modes.js';
+import { modes, characters, computerProgress, decorateScene, updateScene, beginComputerTurn, computerTurnMs } from './modes.js';
 
 const pagesPreview = location.hostname === 'missan-cynthia.github.io';
 const cloudConfig = pagesPreview ? null : firebaseConfig;
@@ -423,12 +423,18 @@ event('choices','click', async event => {
   scene.classList.remove('player-action');
   current.completed.push(revised);
   updateScene(scene, current.completed.length, settings.fires, current.computer);
-  gameStatus(current.character.name + (['mud','ladder'].includes(current.mode.id) ? '正在接應！' : '回合！'));
-  scene.classList.add('computer-action');
-  await delay(650);
+  const nextComputer = computerProgress(current.completed.length, revised.firstCorrect, current.computer, settings.fires);
+  const actions = {
+    water:'回噴水柱！', tug:'加大水柱，把浮球推回來！',
+    race:nextComputer > current.computer ? '噴水滅火！' : '正在瞄準，這次沒有滅掉火焰！',
+    chase:'加速通過彎道！', mud:'接力沖洗泥巴！', ladder:'接住小動物，送回安全區！'
+  };
+  gameStatus(current.character.name + actions[current.mode.id]);
+  const finishComputer = beginComputerTurn(scene, current.mode.id, current.computer, nextComputer, current.completed.length);
+  await delay(computerTurnMs);
+  finishComputer();
   if (current !== mission) return;
-  scene.classList.remove('computer-action');
-  current.computer = computerProgress(current.completed.length, revised.firstCorrect, current.computer, settings.fires);
+  current.computer = nextComputer;
   updateScene(scene, current.completed.length, settings.fires, current.computer);
   progress();
   if (current.completed.length < settings.fires) await nextQuestion();

@@ -195,3 +195,39 @@ textarea{display:block;width:100%;margin:5px 0 12px;resize:vertical}
 [data-mode=race] .computer-building{left:7%;width:24%;height:40%;background:#8db5bc}
 [data-mode=race] .building:not(.computer-building):after{content:"我的救援區"}
 [data-mode=race] .computer-building:after{content:"電腦救援區"}
+.computer-water{display:none;position:absolute;left:var(--computer-jet-x);top:var(--computer-jet-y);width:var(--computer-jet-width);height:20px;transform:rotate(var(--computer-jet-angle));transform-origin:left top;z-index:6}
+.computer-water i{position:absolute;inset:0;border-top:7px dashed #c3f6ff;border-radius:50%;filter:drop-shadow(0 0 4px #228ed1);animation:computer-stream .18s infinite alternate}
+.computer-water i:nth-child(2){top:7px;border-color:#49c6f1;animation-delay:-.09s}
+.computer-water i:nth-child(3){top:-6px;border-width:4px;border-color:#f0fdff}
+.computer-action:is([data-mode=water],[data-mode=tug],[data-mode=race],[data-mode=mud]) .computer-water{display:block;animation:jet-start .2s ease-out}
+.computer-action .rival .wheel{animation:wheel .35s linear infinite}
+[data-mode=water].computer-action>.truck:not(.rival){animation:computer-hit 1.45s both}
+[data-mode=water].computer-action .rival{animation:computer-recoil 1.45s both}
+[data-mode=water].computer-action .splash{left:23%;top:57%;animation:splosh 1.45s both}
+[data-mode=tug] .float-ball{transition:left .5s,transform .4s}
+[data-mode=tug].computer-action .float-ball{animation:ball-pushback 1.45s both}
+[data-mode=tug].computer-action .rival{animation:computer-recoil 1.45s both}
+[data-mode=race].computer-action .rival{animation:aim-hose 1.45s both}
+[data-mode=race].computer-miss .computer-water{opacity:.55;transform:rotate(calc(var(--computer-jet-angle) - .15rad))}
+[data-mode=chase].computer-action .rival{animation:rival-drive 1.45s both}
+[data-mode=chase].computer-action .road:after{animation:road-run .35s linear infinite}
+[data-mode=mud].computer-action .rival{animation:aim-hose 1.45s both}
+[data-mode=mud].computer-action .mud-monster{animation:monster-wash 1.45s both}
+[data-mode=mud].computer-action .mud-monster:after{content:"🫧";position:absolute;left:12%;top:-25%;font-size:3rem;animation:bubbles-rise 1.45s both}
+[data-mode=ladder] .landing-pad{display:block;position:absolute;left:7%;bottom:22%;width:22%;height:9%;background:#e9f4d7;border:5px solid var(--rival-color);border-radius:50%;transform:scaleY(.4);opacity:.5}
+[data-mode=ladder].computer-action .landing-pad{animation:pad-open 1.45s both}
+[data-mode=ladder].computer-action .carried-animal{display:block;position:absolute;left:69%;top:37%;font-size:clamp(24px,5vw,45px);animation:animal-delivery 1.45s both}
+[data-mode=ladder].computer-action .rival{animation:teammate-receive 1.45s both}
+@keyframes computer-stream{from{opacity:.7;translate:0 -3px}to{opacity:1;translate:0 3px}}
+@keyframes jet-start{from{scale:.05 1}to{scale:1}}
+@keyframes computer-hit{25%{translate:-18px 0;rotate:-5deg}50%{translate:-10px 0;rotate:4deg}80%{rotate:0deg}100%{translate:0}}
+@keyframes computer-recoil{25%,65%{translate:10px 0}100%{translate:0}}
+@keyframes ball-pushback{40%,75%{translate:-50px 0;rotate:-90deg}100%{translate:0;rotate:0deg}}
+@keyframes aim-hose{30%,65%{translate:0 -8px;rotate:-5deg}100%{translate:0;rotate:0deg}}
+@keyframes rival-drive{35%{translate:45px -10px;rotate:-7deg}70%{translate:25px 0;rotate:4deg}100%{translate:0;rotate:0deg}}
+@keyframes road-run{to{translate:-8% 0}}
+@keyframes monster-wash{30%,60%{rotate:6deg;scale:.94}45%,80%{rotate:-5deg}100%{rotate:0deg;scale:1}}
+@keyframes bubbles-rise{from{translate:0 20px;opacity:0}40%{opacity:1}to{translate:0 -40px;opacity:0}}
+@keyframes pad-open{25%,80%{transform:scaleY(1);opacity:1}100%{transform:scaleY(.4)}}
+@keyframes animal-delivery{0%{left:69%;top:37%;opacity:1}65%{left:14%;top:65%;opacity:1}90%{left:14%;top:65%;opacity:1}100%{left:14%;top:65%;opacity:0}}
+@keyframes teammate-receive{50%{translate:0 -10px}75%{translate:0 0}90%{translate:0 -5px}100%{translate:0}}

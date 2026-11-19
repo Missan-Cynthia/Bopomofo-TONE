@@ -1,4 +1,4 @@
-function truck() {
+export function truck() {
   return '<div class="truck"><div class="ladder"></div><div class="truck-body"><span>119</span></div><div class="cab"><div></div></div><div class="beacons"><i></i><i></i></div><div class="bumper"></div><div class="wheel rear"></div><div class="wheel front"></div></div>';
 }
 

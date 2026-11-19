@@ -2,7 +2,7 @@ import { parseList, candidates, shuffled, recordAnswer, spelling, tones, setting
 import { local } from './local.js';
 import { firebaseConfig } from './cloud-config.js';
 import { microphone, wav, playable, wakeAudio, chime } from './audio.js';
-import { renderScene, extinguish } from './scene.js';
+import { renderScene, extinguish, truck } from './scene.js';
 import { modes, characters, computerProgress, decorateScene, updateScene } from './modes.js';
 
 const pagesPreview = location.hostname === 'missan-cynthia.github.io';
@@ -255,7 +255,8 @@ function chooseMission() {
   $('mission-map').innerHTML = modes.map(mode => '<button data-mode="' + mode.id + '" aria-pressed="' +
     (selectedMode.id === mode.id) + '"><span>' + mode.icon + '</span><strong>' + mode.name + '</strong><small>' + mode.description + '</small></button>').join('');
   $('characters').innerHTML = characters.map(character => '<button data-character="' + character.id + '" aria-pressed="' +
-    (selectedCharacter.id === character.id) + '" style="--rival-color:' + character.color + '"><span>🚒</span>' + character.name + '</button>').join('');
+    (selectedCharacter.id === character.id) + '" style="--rival-color:' + character.color + '"><div class="character-truck" aria-hidden="true">' +
+    truck() + '</div>' + character.name + '</button>').join('');
   $('character-title').textContent = ['mud','ladder'].includes(selectedMode.id) ? '選一位電腦隊友' : '選一位電腦對手';
   show('missions');
 }

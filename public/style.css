@@ -144,10 +144,13 @@ textarea{display:block;width:100%;margin:5px 0 12px;resize:vertical}
 .mission-map [aria-pressed=true],.characters [aria-pressed=true]{border:3px solid #267782;background:#e5f4eb}
 .characters{display:flex;gap:12px;flex-wrap:wrap}
 .characters button{border-color:var(--rival-color)}
-.characters span{display:block;font-size:2rem}
+.character-truck{position:relative;width:125px;max-width:100%;height:85px;margin:0 auto 8px;container-type:inline-size}
+.character-truck .truck{left:0;bottom:0;width:100%;height:90%}
+.character-truck .truck-body,.character-truck .cab{background:var(--rival-color);border-color:#263f47;box-shadow:inset 0 -8px #0002}
+.character-truck .beacons i{animation:none}
 .versus{text-align:center;margin:0 0 10px;font-weight:750;color:#306370}
 .rival{left:65%;width:26%;bottom:10%;transform:scaleX(-1)}
-.rival .truck-body,.rival .cab{background:var(--rival-color);box-shadow:inset 0 -8px #0002}
+.rival .truck-body,.rival .cab{background:var(--rival-color);border-color:#263f47;box-shadow:inset 0 -8px #0002}
 .intro .rival{animation:none}
 .mode-objects{position:absolute;inset:0;pointer-events:none;z-index:3}
 .float-ball,.finish-line,.mud-monster,.animals,.rescue-ladder,.obstacle,.splash{display:none}
